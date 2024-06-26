@@ -1,0 +1,6 @@
+@apidotnetreact_HostAddress = http://localhost:5069
+
+GET {{apidotnetreact_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
