@@ -1,4 +1,19 @@
+import { useQuery } from "react-query";
+import { getAll } from "../../../services/students/getStudentService";
+import { StudentList } from "../../../domain/student";
+
 export const Home = () => {
+  const { data, error, isLoading } = useQuery<StudentList[], Error>(
+    ["getAll", 1],
+    () => getAll(1)
+  );
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
     <div className="">
       <h3>Cadatro de alunos</h3>
