@@ -1,9 +1,8 @@
-import { Environment } from "../../../environment";
-import { StudentList } from "../../domain/student";
+import { StudentResponse } from "../../domain/student";
 import { api } from "../api/axios-config";
 
-export const getAll = async (page = 1): Promise<StudentList[]> => {
-  const urlRelative = `/student?_page=${page}&_limit=${Environment.LIMIT_LINES}`;
-  const response = await api.get<StudentList[]>(urlRelative);
+export const getAll = async (): Promise<StudentResponse[]> => {
+  const urlRelative = `/Student`;
+  const response = await api.get<StudentResponse[]>(urlRelative);
   return response?.data;
 };

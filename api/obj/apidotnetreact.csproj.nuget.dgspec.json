@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj": {}
+    "d:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj": {}
   },
   "projects": {
-    "D:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj": {
+    "d:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
+        "projectUniqueName": "d:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
         "projectName": "apidotnetreact",
-        "projectPath": "D:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
+        "projectPath": "d:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "D:\\app_web\\apidotnetreact\\api\\obj\\",
+        "outputPath": "d:\\app_web\\apidotnetreact\\api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -45,6 +45,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.6, )"
