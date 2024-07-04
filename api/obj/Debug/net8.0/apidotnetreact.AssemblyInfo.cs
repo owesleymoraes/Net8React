@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("apidotnetreact")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+80f1f9572b8cffae8665662008470dfd757577a7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d1e4a8b9bd63b802d9b174495bf28f874351e9fe")]
 [assembly: System.Reflection.AssemblyProductAttribute("apidotnetreact")]
 [assembly: System.Reflection.AssemblyTitleAttribute("apidotnetreact")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
