@@ -70,7 +70,7 @@ namespace apidotnetreact.Repository
             }
 
         }
-        public async Task UpdateStudent(Student student)
+        public async Task UpdateStudent(StudentUpdateRequest student)
         {
 
             var existingEntity = await _context.Students.FindAsync(student.Id);

@@ -12,7 +12,7 @@ namespace apidotnetreact.Services
         Task<Student> GetStudentById(int id);
         Task<IEnumerable<Student>> GetStudentsByName(string name);
         Task CreateStudent(Student student);
-        Task UpdateStudent(Student student);
+        Task UpdateStudent(StudentUpdateRequest student);
         Task DeleteStudent(int id);
 
     }

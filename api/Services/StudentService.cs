@@ -37,7 +37,7 @@ namespace apidotnetreact.Services
             var student = await _repository.GetStudent(id);
             return student;
         }
-        public async Task UpdateStudent(Student student)
+        public async Task UpdateStudent(StudentUpdateRequest student)
         {
             var hasStudent = await _repository.GetStudent(student.Id);
             _ = hasStudent ?? throw new InvalidOperationException("Student not found!");

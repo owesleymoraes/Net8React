@@ -8,7 +8,7 @@ namespace apidotnetreact.Repository
         Task<Student> GetStudent(int id);
         Task<IEnumerable<Student>> GetStudentsByName(string name);
         Task CreateStudent(Student student);
-        Task UpdateStudent(Student student);
+        Task UpdateStudent(StudentUpdateRequest student);
         Task DeleteStudent(Student student);
 
     }

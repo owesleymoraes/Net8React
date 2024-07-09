@@ -32,6 +32,7 @@ namespace apidotnetreact.Controllers
 
             }
         }
+       
         [HttpGet("StudentByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -57,6 +58,7 @@ namespace apidotnetreact.Controllers
             }
         }
 
+       
         [HttpGet("Student/{id}", Name = "GetStudentById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -82,12 +84,14 @@ namespace apidotnetreact.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(Student student)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult> Create([FromBody] Student student)
         {
             try
             {
                 await _service.CreateStudent(student);
-                return CreatedAtRoute(nameof(GetStudentById), new { id = student.Id }, student);
+                return CreatedAtRoute(nameof(GetStudentById), new { id = student.Name }, student);
             }
             catch
             {
@@ -98,7 +102,7 @@ namespace apidotnetreact.Controllers
         }
 
         [HttpPut("Update")]
-        public async Task<ActionResult> Update([FromBody] Student student)
+        public async Task<ActionResult> Update([FromBody] StudentUpdateRequest student)
         {
             try
             {
