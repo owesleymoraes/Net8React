@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj": {}
+    "D:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj": {}
   },
   "projects": {
-    "d:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj": {
+    "D:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
+        "projectUniqueName": "D:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
         "projectName": "apidotnetreact",
-        "projectPath": "d:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
+        "projectPath": "D:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "d:\\app_web\\apidotnetreact\\api\\obj\\",
+        "outputPath": "D:\\app_web\\apidotnetreact\\api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
