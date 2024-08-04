@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cDbeCfXdfb0l+lbe74hytqggO6efirqrf28rv9c90aoY2g/gOHUK5isRa09qkwuWXcJ4qoKfmB4kJQiCCyFsnQ==",
+  "dgSpecHash": "DDZ8Hnm0mX+6q3CxkOY+oip3St4gthqj+2S3Vyn9wbML4TvieUZtjOyaKey9ZN6dj9AyObANXuW7HQdiH7xkuQ==",
   "success": true,
-  "projectFilePath": "D:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
+  "projectFilePath": "d:\\app_web\\apidotnetreact\\api\\apidotnetreact.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DELL\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

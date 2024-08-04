@@ -1,0 +1,60 @@
+# Build Folders
+bin/
+obj/
+
+# Compiled DLLs and EXEs
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.log
+*.meta
+*.obj
+*.tmp
+*.csproj.user
+*.csproj.DotSettings
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files (backup files)
+*.sln.ide
+*.sln.ide.cache
+.vscode/
+
+# Visual Studio Code settings
+.vscode/*
+
+# Visual Studio 2019/2022
+.vscode/
+.vscode/*
+
+# Rider
+.idea/
+.idea/*
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuget
+.nuget/
+packages/
+packages.config
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.B
