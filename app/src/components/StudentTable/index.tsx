@@ -3,9 +3,10 @@ import { Button } from "../Button";
 
 interface StudentTableProps {
   students: StudentResponse[] | undefined;
+  onEdit: (student: StudentResponse) => void;
 }
 
-export const StudentTable = ({ students }: StudentTableProps) => {
+export const StudentTable = ({ students, onEdit }: StudentTableProps) => {
   return (
     <>
       <table className="border-2 w-4/5 ml-auto mr-auto text-center">
@@ -26,7 +27,7 @@ export const StudentTable = ({ students }: StudentTableProps) => {
               <td className="px-4 py-2 border">{item.email}</td>
               <td className="px-4 py-2 border">{item.age}</td>
               <td className="px-4 py-2 border">
-                <Button typeButton="success" onClick={() => {}}>
+                <Button typeButton="success" onClick={() => onEdit(item)}>
                   Editar
                 </Button>
                 <Button typeButton="error" onClick={() => {}}>
