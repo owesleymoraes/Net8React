@@ -6,13 +6,41 @@ import { Header } from "../../../../components/Header";
 import { Loader } from "../../../../components/Loader";
 import { RegisterStudent } from "../../../../components/RegisterStudent";
 import { StudentTable } from "../../../../components/StudentTable";
-import { StudentResponse } from "../../../domain/student";
+import { StudentResponse, StudentUpdateRequest } from "../../../domain/student";
 import { create } from "../../../services/students/createStudentService";
 import { getAll } from "../../../services/students/getStudentService";
+import { update } from "../../../services/students/updateStudentService";
 
 export const Home = () => {
   const queryClient = useQueryClient();
-  const mutation = useMutation({ mutationFn: create });
+  const mutation = useMutation(create, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("getAll");
+
+      setIsOpenModal(false);
+
+      setForm({
+        name: "",
+        email: "",
+        age: "",
+      });
+    },
+  });
+
+  const mutationUpdate = useMutation(update, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("getAll");
+
+      setIsOpenModal(false);
+      setIsEdit(false);
+
+      setForm({
+        name: "",
+        email: "",
+        age: "",
+      });
+    },
+  });
 
   const { data, error, isLoading } = useQuery<StudentResponse[], Error>(
     ["getAll"],
@@ -28,8 +56,15 @@ export const Home = () => {
     ? "Ocorreu um erro ao carregar os estudantes."
     : "Ocorreu um erro ao criar um estudante.";
 
-  const [disabled, setDisabled] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [studentEdit, setStudentEdit] = useState<StudentUpdateRequest>({
+    id: undefined,
+    name: "",
+    email: "",
+    age: undefined,
+  });
+  const [disabledButton, setDisabledButton] = useState(false);
   const [form, setForm] = useState<FormStudent>({
     name: "",
     email: "",
@@ -37,11 +72,20 @@ export const Home = () => {
   });
 
   const handleCreateStudent = () => {
-    mutation.mutate({
-      name: form.name,
-      email: form.email,
-      age: Number(form.age),
-    });
+    if (isEdit) {
+      mutationUpdate.mutate({
+        id: studentEdit.id,
+        name: form.name,
+        email: form.email,
+        age: Number(form.age),
+      });
+    } else {
+      mutation.mutate({
+        name: form.name,
+        email: form.email,
+        age: Number(form.age),
+      });
+    }
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -70,7 +114,7 @@ export const Home = () => {
 
   const handleCloseAlertError = () => {
     queryClient.resetQueries("getAll");
-    mutation.reset()
+    mutation.reset();
   };
 
   const handleCloseForm = () => {
@@ -79,15 +123,41 @@ export const Home = () => {
       email: "",
       age: "",
     });
-    setIsOpenModal(!isOpenModal);
+    setIsEdit(false);
+    setIsOpenModal(false);
+  };
+
+  const handleEditStudent = (student: StudentUpdateRequest) => {
+    setDisabledButton(true);
+    setStudentEdit({
+      id: student.id,
+      name: student.name,
+      email: student.email,
+      age: student.age,
+    });
+    setIsEdit(true);
+    setForm({
+      name: student.name,
+      email: student.email,
+      age: String(student.age),
+    });
   };
 
   const isEmptyForm = (form: FormStudent): boolean => {
     return Object.values(form).some((value) => value === "");
   };
 
+  useEffect(() => {
+    const compareStudents =
+      form.name === studentEdit?.name &&
+      form.email === studentEdit?.email &&
+      form.age === String(studentEdit?.age);
+
+    setDisabledButton(compareStudents || isEmptyForm(form));
+  }, [form, disabledButton, studentEdit]);
+
   if (isLoading || mutation.isLoading) {
-    return <Loader isOpen={isLoading} />;
+    return <Loader isOpen={isLoading || mutation.isLoading} />;
   }
 
   if (error || mutation.error) {
@@ -102,26 +172,22 @@ export const Home = () => {
     );
   }
 
-  // useEffect(() => {
-  //   setDisabled(isEmptyForm(form));
-  // }, [form]);
-
   return (
     <div className="w-full">
       <FormModal
-        isOpen={isOpenModal}
+        isOpen={isOpenModal || isEdit}
         onConfirm={handleCreateStudent}
         formValues={form}
         onChange={(event) => handleChange(event)}
         onClose={handleCloseForm}
-        disabled={disabled}
+        disabled={disabledButton}
       />
       <Header title="Cadastro de alunos" />
       <RegisterStudent
         title="Incluir novo Aluno"
         onClick={() => setIsOpenModal(!isOpenModal)}
       />
-      <StudentTable students={data} />
+      <StudentTable students={data} onEdit={handleEditStudent} />
     </div>
   );
 };

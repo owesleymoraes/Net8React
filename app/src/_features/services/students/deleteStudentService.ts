@@ -1,8 +1,12 @@
+import { StudentDeleteResponse } from "../../domain/student";
 import { api } from "../api/axios-config";
-import { StudentResponse } from "../../domain/student";
 
 export const deleteById = async (idStudent: number): Promise<number> => {
   const urlRelative = `/student/${idStudent}`;
-  const response = await api.delete<StudentResponse>(urlRelative);
-  return response?.data?.id;
+  const response = await api.delete<StudentDeleteResponse>(urlRelative);
+  const id = response?.data?.id;
+  if (id === undefined) {
+    throw new Error("ID is undefined");
+  }
+  return id;
 };

@@ -1,16 +1,20 @@
+import { StudentUpdateRequest } from "../../domain/student";
 import { api } from "../api/axios-config";
-import { StudentRequest, StudentResponse } from "../../domain/student";
 
 export const update = async (
-  idStudent: number,
-  student: StudentRequest
+  student: StudentUpdateRequest
 ): Promise<number> => {
-  const urlRelative = `/student/${idStudent}`;
-  const response = await api.put<StudentResponse>(urlRelative, {
+  const urlRelative = `/student/Update/${student.id}`;
+  const response = await api.put<StudentUpdateRequest>(urlRelative, {
+    id: student.id,
     name: student.name,
     email: student.email,
     age: student.age,
   });
 
-  return response?.data?.id;
+  const id = response?.data?.id;
+  if (id === undefined) {
+    throw new Error("ID is undefined");
+  }
+  return id;
 };

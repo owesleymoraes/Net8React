@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: String;
+  children: string;
   disabled?: boolean;
   onClick: () => void;
   typeButton: "success" | "error";
