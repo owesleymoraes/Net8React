@@ -120,12 +120,12 @@ namespace apidotnetreact.Controllers
         }
 
         [HttpDelete("Delete/{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete([FromRoute] int id)
         {
             try
             {
                 await _service.DeleteStudent(id);
-                return Ok(id);
+                return Ok(new { id = id });
 
             }
             catch

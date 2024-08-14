@@ -10,6 +10,8 @@ import { StudentResponse, StudentUpdateRequest } from "../../../domain/student";
 import { create } from "../../../services/students/createStudentService";
 import { getAll } from "../../../services/students/getStudentService";
 import { update } from "../../../services/students/updateStudentService";
+import { deleteById } from "../../../services/students/deleteStudentService";
+import { ConfirmModal } from "../../../../components/ConfirmModal";
 
 export const Home = () => {
   const queryClient = useQueryClient();
@@ -42,6 +44,22 @@ export const Home = () => {
     },
   });
 
+  const mutationDelete = useMutation(deleteById, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("getAll");
+
+      setIsOpenModal(false);
+      setIsOpenConfirmModal(false);
+      setIsEdit(false);
+
+      setForm({
+        name: "",
+        email: "",
+        age: "",
+      });
+    },
+  });
+
   const { data, error, isLoading } = useQuery<StudentResponse[], Error>(
     ["getAll"],
     () => getAll(),
@@ -58,6 +76,8 @@ export const Home = () => {
 
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [idStudent, setIdStudent] = useState<number | undefined>();
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
   const [studentEdit, setStudentEdit] = useState<StudentUpdateRequest>({
     id: undefined,
     name: "",
@@ -71,7 +91,7 @@ export const Home = () => {
     age: "",
   });
 
-  const handleCreateStudent = () => {
+  const handleSubmitStudent = () => {
     if (isEdit) {
       mutationUpdate.mutate({
         id: studentEdit.id,
@@ -86,6 +106,10 @@ export const Home = () => {
         age: Number(form.age),
       });
     }
+  };
+
+  const handleDeleteStudent = () => {
+    mutationDelete.mutate(idStudent!);
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -143,6 +167,11 @@ export const Home = () => {
     });
   };
 
+  const handleClickDelete = (id: number) => {
+    setIdStudent(id);
+    setIsOpenConfirmModal(true);
+  };
+
   const isEmptyForm = (form: FormStudent): boolean => {
     return Object.values(form).some((value) => value === "");
   };
@@ -174,9 +203,14 @@ export const Home = () => {
 
   return (
     <div className="w-full">
+      <ConfirmModal
+        isOpen={isOpenConfirmModal}
+        onClose={() => setIsOpenConfirmModal(false)}
+        onConfirm={handleDeleteStudent}
+      />
       <FormModal
         isOpen={isOpenModal || isEdit}
-        onConfirm={handleCreateStudent}
+        onConfirm={handleSubmitStudent}
         formValues={form}
         onChange={(event) => handleChange(event)}
         onClose={handleCloseForm}
@@ -187,7 +221,11 @@ export const Home = () => {
         title="Incluir novo Aluno"
         onClick={() => setIsOpenModal(!isOpenModal)}
       />
-      <StudentTable students={data} onEdit={handleEditStudent} />
+      <StudentTable
+        students={data}
+        onEdit={handleEditStudent}
+        onDelete={handleClickDelete}
+      />
     </div>
   );
 };

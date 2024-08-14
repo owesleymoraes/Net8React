@@ -4,6 +4,7 @@ export type StudentList = {
 };
 
 export type StudentResponse = {
+  id?: number;
   name: string;
   email: string;
   age: number;

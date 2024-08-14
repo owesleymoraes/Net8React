@@ -9,5 +9,9 @@ export const create = async (student: StudentRequest): Promise<number> => {
     age: student.age,
   });
 
-  return response?.data.id;
+  const id = response?.data?.id;
+  if (id === undefined) {
+    throw new Error("ID is undefined");
+  }
+  return id;
 };

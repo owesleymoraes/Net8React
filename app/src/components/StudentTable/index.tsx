@@ -4,9 +4,14 @@ import { Button } from "../Button";
 interface StudentTableProps {
   students: StudentResponse[] | undefined;
   onEdit: (student: StudentResponse) => void;
+  onDelete: (id: number) => void;
 }
 
-export const StudentTable = ({ students, onEdit }: StudentTableProps) => {
+export const StudentTable = ({
+  students,
+  onEdit,
+  onDelete,
+}: StudentTableProps) => {
   return (
     <>
       <table className="border-2 w-4/5 ml-auto mr-auto text-center">
@@ -30,7 +35,7 @@ export const StudentTable = ({ students, onEdit }: StudentTableProps) => {
                 <Button typeButton="success" onClick={() => onEdit(item)}>
                   Editar
                 </Button>
-                <Button typeButton="error" onClick={() => {}}>
+                <Button typeButton="error" onClick={() => onDelete(item.id!)}>
                   Excluir
                 </Button>
               </td>
