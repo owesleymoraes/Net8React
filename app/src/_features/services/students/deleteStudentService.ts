@@ -1,9 +1,9 @@
-import { StudentDeleteResponse } from "../../domain/student";
+import { StudentIdResponse } from "../../domain/student";
 import { api } from "../api/axios-config";
 
 export const deleteById = async (idStudent: number): Promise<number> => {
   const urlRelative = `/student/Delete/${idStudent}`;
-  const response = await api.delete<StudentDeleteResponse>(urlRelative, {
+  const response = await api.delete<StudentIdResponse>(urlRelative, {
     data: {
       id: idStudent,
     },
