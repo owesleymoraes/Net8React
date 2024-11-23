@@ -1,17 +1,17 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Alert from "../../../../components/Alert";
+import { ConfirmModal } from "../../../../components/ConfirmModal";
 import { FormModal, FormStudent } from "../../../../components/FormModal";
 import { Header } from "../../../../components/Header";
 import { Loader } from "../../../../components/Loader";
 import { RegisterStudent } from "../../../../components/RegisterStudent";
 import { StudentTable } from "../../../../components/StudentTable";
-import { StudentResponse, StudentUpdateRequest } from "../../../domain/student";
+import { StudentRequest, StudentResponse } from "../../../domain/student";
 import { create } from "../../../services/students/createStudentService";
+import { deleteById } from "../../../services/students/deleteStudentService";
 import { getAll } from "../../../services/students/getStudentService";
 import { update } from "../../../services/students/updateStudentService";
-import { deleteById } from "../../../services/students/deleteStudentService";
-import { ConfirmModal } from "../../../../components/ConfirmModal";
 
 export const Home = () => {
   const queryClient = useQueryClient();
@@ -78,7 +78,7 @@ export const Home = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [idStudent, setIdStudent] = useState<number | undefined>();
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
-  const [studentEdit, setStudentEdit] = useState<StudentUpdateRequest>({
+  const [studentEdit, setStudentEdit] = useState<StudentRequest>({
     id: undefined,
     name: "",
     email: "",
@@ -151,7 +151,7 @@ export const Home = () => {
     setIsOpenModal(false);
   };
 
-  const handleEditStudent = (student: StudentUpdateRequest) => {
+  const handleEditStudent = (student: StudentRequest) => {
     setDisabledButton(true);
     setStudentEdit({
       id: student.id,
