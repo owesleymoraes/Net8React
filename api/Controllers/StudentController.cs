@@ -1,11 +1,15 @@
 using apidotnetreact.Models;
 using apidotnetreact.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
 namespace apidotnetreact.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class StudentController : Controller
     {
         private readonly IStudentService _service;
