@@ -1,4 +1,4 @@
-import { StudentResponse } from "../../_features/domain/student";
+import { StudentResponse } from "../../_features/student/domain/student";
 import { Button } from "../Button";
 
 interface StudentTableProps {

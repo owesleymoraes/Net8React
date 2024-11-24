@@ -1,4 +1,4 @@
-import { Home } from "./_features/ui/pages/home";
+import { Home } from "./_features/student/ui/pages/home";
 
 export const App = () => {
   return <Home />;
