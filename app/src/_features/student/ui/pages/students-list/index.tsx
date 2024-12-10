@@ -1,5 +1,10 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom";
+import {
+  HOME,
+  PAGES_ROUTES
+} from "../../../../../_routers/paths";
 import Alert from "../../../../../components/Alert";
 import { ConfirmModal } from "../../../../../components/ConfirmModal";
 import { FormModal, FormStudent } from "../../../../../components/FormModal";
@@ -13,8 +18,9 @@ import { deleteById } from "../../../services/students/deleteStudentService";
 import { getAll } from "../../../services/students/getStudentService";
 import { update } from "../../../services/students/updateStudentService";
 
-export const Home = () => {
+export const StudentList = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const mutation = useMutation(create, {
     onSuccess: () => {
       queryClient.invalidateQueries("getAll");
@@ -139,6 +145,7 @@ export const Home = () => {
   const handleCloseAlertError = () => {
     queryClient.resetQueries("getAll");
     mutation.reset();
+    navigate(HOME.home);
   };
 
   const handleCloseForm = () => {
@@ -219,7 +226,7 @@ export const Home = () => {
       <Header title="Cadastro de alunos" />
       <RegisterStudent
         title="Incluir novo Aluno"
-        onClick={() => setIsOpenModal(!isOpenModal)}
+        onClick={() => navigate(PAGES_ROUTES.createStudent)}
       />
       <StudentTable
         students={data}

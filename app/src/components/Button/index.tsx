@@ -3,8 +3,8 @@ import { ButtonHTMLAttributes } from "react";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: string;
   disabled?: boolean;
-  onClick: () => void;
-  typeButton: "success" | "error";
+  onClick?: () => void;
+  typeButton?: "success" | "error";
 }
 export const Button = ({
   children,
