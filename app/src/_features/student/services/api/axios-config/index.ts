@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Environment } from "../../../../../environment";
 import { errorInterceptor, responseInterceptor } from "./interceptors";
-import { useGlobalStore } from "../../../../../_store/global-store";
+import { useTokenStore } from "../../../../../_store/use-token-store";
 
 const api = axios.create({
   baseURL: Environment.URL_BASE,
@@ -9,7 +9,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = useGlobalStore.getState().token;
+    const token = useTokenStore.getState().token;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
