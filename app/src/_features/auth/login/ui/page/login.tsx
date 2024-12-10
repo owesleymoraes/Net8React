@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { PAGES_ROUTES } from "../../../../../_routers/paths";
-import { useGlobalStore } from "../../../../../_store/global-store";
+import { useTokenStore } from "../../../../../_store/use-token-store";
 import loginImage from "../../../../../assets/login.jpg";
 import { Button } from "../../../../../components/Button";
 import { Input } from "../../../../../components/Input";
@@ -13,7 +13,7 @@ import { LoginResponse } from "../../domain/login";
 import { login } from "../../services/login-client/loginService";
 
 export const Login = () => {
-  const addToken = useGlobalStore((state) => state.addToken);
+  const addToken = useTokenStore((state) => state.addToken);
   const navigate = useNavigate();
 
   const mutation = useMutation(login, {

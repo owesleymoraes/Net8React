@@ -6,7 +6,7 @@ type LoginStore = {
   resetToken: () => void;
 };
 
-export const useGlobalStore = create<LoginStore>((set) => ({
+export const useTokenStore = create<LoginStore>((set) => ({
   token: "",
   addToken: (token) => set(() => ({ token })),
   resetToken: () => set(() => ({ token: "" })),
