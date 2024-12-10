@@ -1,22 +1,28 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { PAGES_ROUTES } from "../../../../../_routers/paths";
+import { useStudentStore } from "../../../../../_store/use-student-store";
+import Alert from "../../../../../components/Alert";
 import { Button } from "../../../../../components/Button";
 import { Input } from "../../../../../components/Input";
-import { formCreateStudentSchema } from "../../../../validation/form-create-student-schema";
-import { create } from "../../../services/students/createStudentService";
-import { useNavigate } from "react-router-dom";
-import { PAGES_ROUTES } from "../../../../../_routers/paths";
 import { Loader } from "../../../../../components/Loader";
-import Alert from "../../../../../components/Alert";
+import { formCreateStudentSchema } from "../../../../validation/form-create-student-schema";
+import { formEditStudentSchema } from "../../../../validation/form-edit-student-schema";
+import { update } from "../../../services/students/updateStudentService";
 
-export const CreateStudent = () => {
+export const EditStudent = () => {
   const navigate = useNavigate();
-  type FormCreateStudentSchema = z.infer<typeof formCreateStudentSchema>;
+  const queryClient = useQueryClient();
+  const student = useStudentStore((state) => state.student);
 
-  const mutation = useMutation(create, {
+  type FormeEditStudentSchema = z.infer<typeof formEditStudentSchema>;
+
+  const mutation = useMutation(update, {
     onSuccess: () => {
+      queryClient.invalidateQueries("getAll");
       setValue("email", "");
       setValue("name", "");
       navigate(PAGES_ROUTES.student);
@@ -31,12 +37,12 @@ export const CreateStudent = () => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormCreateStudentSchema>({
+  } = useForm<FormeEditStudentSchema>({
     resolver: zodResolver(formCreateStudentSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      age: undefined,
+      name: student.name,
+      email: student.email,
+      age: student.age,
     },
   });
 
@@ -45,6 +51,7 @@ export const CreateStudent = () => {
       name: getValues("name"),
       email: getValues("email"),
       age: getValues("age"),
+      id: student.id,
     });
   };
 
@@ -115,7 +122,11 @@ export const CreateStudent = () => {
           <Button type="submit" typeButton="success">
             Salvar
           </Button>
-          <Button typeButton="error" onClick={() => {}}>
+          <Button
+            type="button"
+            typeButton="error"
+            onClick={() => navigate(PAGES_ROUTES.student)}
+          >
             Voltar
           </Button>
         </div>

@@ -12,5 +12,6 @@ export const LOGIN_ROUTES = {
 export const PAGES_ROUTES = {
   student: "/Student",
   createStudent: "/CreateStudent",
+  editStudent: "/EditStudent",
   dashboard: "/Dashboard",
 };
