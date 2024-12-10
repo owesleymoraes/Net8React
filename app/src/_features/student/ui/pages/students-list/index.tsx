@@ -1,20 +1,26 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import Alert from "../../../../components/Alert";
-import { ConfirmModal } from "../../../../components/ConfirmModal";
-import { FormModal, FormStudent } from "../../../../components/FormModal";
-import { Header } from "../../../../components/Header";
-import { Loader } from "../../../../components/Loader";
-import { RegisterStudent } from "../../../../components/RegisterStudent";
-import { StudentTable } from "../../../../components/StudentTable";
+import { useNavigate } from "react-router-dom";
+import {
+  HOME,
+  PAGES_ROUTES
+} from "../../../../../_routers/paths";
+import Alert from "../../../../../components/Alert";
+import { ConfirmModal } from "../../../../../components/ConfirmModal";
+import { FormModal, FormStudent } from "../../../../../components/FormModal";
+import { Header } from "../../../../../components/Header";
+import { Loader } from "../../../../../components/Loader";
+import { RegisterStudent } from "../../../../../components/RegisterStudent";
+import { StudentTable } from "../../../../../components/StudentTable";
 import { StudentRequest, StudentResponse } from "../../../domain/student";
 import { create } from "../../../services/students/createStudentService";
 import { deleteById } from "../../../services/students/deleteStudentService";
 import { getAll } from "../../../services/students/getStudentService";
 import { update } from "../../../services/students/updateStudentService";
 
-export const Home = () => {
+export const StudentList = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const mutation = useMutation(create, {
     onSuccess: () => {
       queryClient.invalidateQueries("getAll");
@@ -139,6 +145,7 @@ export const Home = () => {
   const handleCloseAlertError = () => {
     queryClient.resetQueries("getAll");
     mutation.reset();
+    navigate(HOME.home);
   };
 
   const handleCloseForm = () => {
@@ -219,7 +226,7 @@ export const Home = () => {
       <Header title="Cadastro de alunos" />
       <RegisterStudent
         title="Incluir novo Aluno"
-        onClick={() => setIsOpenModal(!isOpenModal)}
+        onClick={() => navigate(PAGES_ROUTES.createStudent)}
       />
       <StudentTable
         students={data}
