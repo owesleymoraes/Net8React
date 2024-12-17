@@ -7,6 +7,7 @@ export const HOME = {
 export const AUTHENTICATION_2FA = {
   generateQrCodeAuthentication: "/Account/GenerateTwoFactorAuthentication",
   manualAuthentication: "/Account/ManualTwoFactorAuthentication",
+  otpAuthentication: "/Account/otpAuthentication",
 };
 
 //login
