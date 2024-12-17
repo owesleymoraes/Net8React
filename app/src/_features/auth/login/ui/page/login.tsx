@@ -1,30 +1,39 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { PAGES_ROUTES } from "../../../../../_routers/paths";
-import { useTokenStore } from "../../../../../_store/use-token-store";
+import { AUTHENTICATION_2FA } from "../../../../../_routers/paths";
+import { useAuthenticationStore } from "../../../../../_store/use-authentication-store";
 import loginImage from "../../../../../assets/login.jpg";
 import { Button } from "../../../../../components/Button";
 import { Input } from "../../../../../components/Input";
 import { formLoginSchema } from "../../../../validation/form-login-schema";
-import { LoginResponse } from "../../domain/login";
+import { LoginAuthenticationResponse } from "../../domain/login";
 import { login } from "../../services/login-client/loginService";
+import { GenerateQrCodeAuthenticationResponse } from "../../../authecation-2FA/domain/two-facto-authentication";
+import { GenerateQrCodeAuthentication } from "../../../authecation-2FA/service/generateQrCodeAuthenticationService";
+import { Loader } from "../../../../../components/Loader";
+import { useGenerateQrCodeAuthenticationStore } from "../../../authecation-2FA/context/use-qr-code-authentication-store";
 
 export const Login = () => {
-  const addToken = useTokenStore((state) => state.addToken);
+  const addAuthentication = useAuthenticationStore(
+    (state) => state.setAuthentication
+  );
+
+  const addQrCode = useGenerateQrCodeAuthenticationStore(
+    (state) => state.setQrCode
+  );
   const navigate = useNavigate();
 
   const mutation = useMutation(login, {
-    onSuccess: (data: LoginResponse) => {
-      addToken(data.token);
-      setValue("email", "");
-      setValue("password", "");
-      navigate(PAGES_ROUTES.student);
+    onSuccess: (data: LoginAuthenticationResponse) => {
+      addAuthentication(data);
     },
-    onError: (error) => {
-      console.error("Erro no login:", error);
+    onError: (error: Error) => {
+      console.error("Erro in login:", error.message);
+      // Adicione aqui um feedback visual para o usuário, por exemplo:
+      // toast.error("Falha no login. Verifique suas credenciais.");
     },
   });
 
@@ -34,7 +43,6 @@ export const Login = () => {
     reset,
     register,
     getValues,
-    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<FormLoginSchema>({
@@ -51,6 +59,31 @@ export const Login = () => {
       password: getValues("password"),
     });
   };
+
+  const { data: loginData } = mutation;
+
+  const { isLoading } = useQuery<GenerateQrCodeAuthenticationResponse, Error>(
+    ["GenerateQrCodeAuthentication", getValues("email"), getValues("password")],
+    () =>
+      GenerateQrCodeAuthentication({
+        email: getValues("email") || "",
+        password: getValues("password") || "",
+      }),
+    {
+      enabled: loginData?.isFirstAccess === true,
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      onSuccess: (data: GenerateQrCodeAuthenticationResponse) => {
+        addQrCode(data);
+        navigate(AUTHENTICATION_2FA.generateQrCodeAuthentication);
+      },
+    }
+  );
+
+  if (isLoading) {
+    return <Loader isOpen={isLoading} />;
+  }
 
   return (
     <div className="flex w-[420px] h-screen justify-center items-center m-auto ">

@@ -3,6 +3,12 @@ export const HOME = {
   home: "/",
 };
 
+//auth - 2FA
+export const AUTHENTICATION_2FA = {
+  generateQrCodeAuthentication: "/Account/GenerateTwoFactorAuthentication",
+  manualAuthentication: "/Account/ManualTwoFactorAuthentication",
+};
+
 //login
 export const LOGIN_ROUTES = {
   login: "/Account/LoginUser",
