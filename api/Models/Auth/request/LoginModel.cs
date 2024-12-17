@@ -5,6 +5,8 @@ namespace api.Models.Auth
 {
     public class LoginModel
     {
+        public string? OtpCode { get; set; }
+
         [Required(ErrorMessage = "Email é obrigatório")]
         [EmailAddress(ErrorMessage = "Formato de email inválido")]
         public string Email { get; set; }

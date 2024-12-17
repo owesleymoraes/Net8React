@@ -5,8 +5,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace api.Controllers
 {
@@ -51,22 +49,50 @@ namespace api.Controllers
 
 
         [HttpPost("LoginUser")]
-        public async Task<ActionResult<UserToken>> Login([FromBody] LoginModel userInfo)
+        public async Task<ActionResult<Authentication>> Login([FromBody] LoginModel userInfo)
         {
             var result = await _authentication.Authenticate(userInfo.Email, userInfo.Password);
-
-            if (result)
-            {
-                return GenerateToken(userInfo);
-            }
-            else
-            {
-                ModelState.AddModelError("LoginUser", "Login inválido");
-                return BadRequest(ModelState);
-            }
+            return result;
 
 
         }
+
+        [HttpPost("GenerateTwoFactorAuthentication")]
+        public async Task<ActionResult<User2FA>> GenerateTwoFactorAuthentication([FromBody] TwoFactorAuthentication userInfo)
+        {
+            var result = await _authentication.GenerateTwoFactorAuthentication(userInfo.Email, userInfo.Password);
+            return result;
+
+        }
+
+        [HttpPost("ValidateTwoFactorAuthentication")]
+        public async Task<ActionResult<UserToken>> ValidateTwoFactorAuthentication([FromBody] LoginModel userInfo)
+        {
+            bool isValidOtpCode = await _authentication.ValidateTwoFactorAuthentication(userInfo);
+
+            if (isValidOtpCode)
+            {
+
+                var result = await _authentication.Authenticate(userInfo.Email, userInfo.Password);
+
+                if (result.Success)
+                {
+                    return GenerateToken(userInfo);
+                }
+                else
+                {
+                    ModelState.AddModelError("LoginUser", "Login inválido");
+                    return BadRequest(ModelState);
+                }
+
+            }
+            else
+            {
+                return Unauthorized("Erro Code OTP");
+            }
+
+        }
+
 
         private ActionResult<UserToken> GenerateToken(LoginModel userInfo)
         {
