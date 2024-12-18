@@ -6,6 +6,7 @@ export const HOME = {
 //auth - 2FA
 export const AUTHENTICATION_2FA = {
   generateQrCodeAuthentication: "/Account/GenerateTwoFactorAuthentication",
+  validateTwoFactorAuthentication: "/Account/ValidateTwoFactorAuthentication",
   manualAuthentication: "/Account/ManualTwoFactorAuthentication",
   otpAuthentication: "/Account/otpAuthentication",
 };

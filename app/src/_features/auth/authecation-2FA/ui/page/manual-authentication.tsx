@@ -39,7 +39,7 @@ export const ManualAuthentication = () => {
             type="submit"
             onClick={() => navigate(-1)}
           >
-            voltar
+            Voltar
           </Button>
         </div>
       </div>

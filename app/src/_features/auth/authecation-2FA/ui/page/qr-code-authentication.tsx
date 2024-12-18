@@ -4,12 +4,49 @@ import device from "../../../../../assets/device.png";
 import { Button } from "../../../../../components/Button";
 import { QRCodeImage } from "../../../../../components/QrCodeImage";
 import { useGenerateQrCodeAuthenticationStore } from "../../context/use-qr-code-authentication-store";
+import { GenerateQrCodeAuthenticationResponse } from "../../domain/two-facto-authentication";
+import { useQuery } from "react-query";
+import { useUpdatedLoginStore } from "../../context/use-otp-authentication-store";
+import { GenerateQrCodeAuthentication } from "../../service/generateQrCodeAuthenticationService";
+import { Loader } from "@/components/Loader";
 
 export const QRCodeAuthentication = () => {
+  const addQrCode = useGenerateQrCodeAuthenticationStore(
+    (state) => state.setQrCode
+  );
   const qrCode = useGenerateQrCodeAuthenticationStore((state) => state.qrCode);
+  const updatedLogin = useUpdatedLoginStore((state) => state.updatedLogin);
 
   const { qrCodeImage } = qrCode;
   const navigate = useNavigate();
+
+  const { isLoading, error } = useQuery<
+    GenerateQrCodeAuthenticationResponse,
+    Error
+  >(
+    ["GenerateQrCodeAuthentication", updatedLogin.email, updatedLogin.password],
+    () =>
+      GenerateQrCodeAuthentication({
+        email: updatedLogin.email || "",
+        password: updatedLogin.password || "",
+      }),
+    {
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      onSuccess: (data: GenerateQrCodeAuthenticationResponse) => {
+        addQrCode(data);
+      },
+    }
+  );
+
+  if (isLoading) {
+    return <Loader isOpen={isLoading} />;
+  }
+
+  if (error) {
+    return <div>Erro ao gerar QR Code: {error.message}</div>;
+  }
 
   return (
     <div className="flex w-[420px] h-screen justify-center items-center m-auto ">

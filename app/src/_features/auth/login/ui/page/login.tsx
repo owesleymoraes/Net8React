@@ -1,6 +1,7 @@
+import { useUpdatedLoginStore } from "@/_features/auth/authecation-2FA/context/use-otp-authentication-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { AUTHENTICATION_2FA } from "../../../../../_routers/paths";
@@ -11,31 +12,52 @@ import { Input } from "../../../../../components/Input";
 import { formLoginSchema } from "../../../../validation/form-login-schema";
 import { LoginAuthenticationResponse } from "../../domain/login";
 import { login } from "../../services/login-client/loginService";
-import { GenerateQrCodeAuthenticationResponse } from "../../../authecation-2FA/domain/two-facto-authentication";
-import { GenerateQrCodeAuthentication } from "../../../authecation-2FA/service/generateQrCodeAuthenticationService";
-import { Loader } from "../../../../../components/Loader";
-import { useGenerateQrCodeAuthenticationStore } from "../../../authecation-2FA/context/use-qr-code-authentication-store";
 
 export const Login = () => {
+  const addLoginUpdated = useUpdatedLoginStore(
+    (state) => state.setUpdatedLogin
+  );
+
   const addAuthentication = useAuthenticationStore(
     (state) => state.setAuthentication
   );
 
-  const addQrCode = useGenerateQrCodeAuthenticationStore(
-    (state) => state.setQrCode
-  );
+  // const addQrCode = useGenerateQrCodeAuthenticationStore(
+  //   (state) => state.setQrCode
+  // );
+  
   const navigate = useNavigate();
 
   const mutation = useMutation(login, {
     onSuccess: (data: LoginAuthenticationResponse) => {
       addAuthentication(data);
+
+      if (data.isFirstAccess && data.success) {
+        // Se for o primeiro acesso, navegue para a página de leitura do QR Code
+        addLoginUpdated(getValues());
+        navigate(AUTHENTICATION_2FA.generateQrCodeAuthentication);
+      } else if (data.success) {
+        // Se não for o primeiro acesso, navegue para a página de OTP
+        addLoginUpdated(getValues());
+        navigate(AUTHENTICATION_2FA.otpAuthentication);
+      }
     },
     onError: (error: Error) => {
-      console.error("Erro in login:", error.message);
-      // Adicione aqui um feedback visual para o usuário, por exemplo:
-      // toast.error("Falha no login. Verifique suas credenciais.");
+      console.error("Erro no login:", error.message);
+      // Adicione aqui um feedback visual para o usuário
     },
   });
+
+  // const mutation = useMutation(login, {
+  //   onSuccess: (data: LoginAuthenticationResponse) => {
+  //     addAuthentication(data);
+  //   },
+  //   onError: (error: Error) => {
+  //     console.error("Erro in login:", error.message);
+  //     // Adicione aqui um feedback visual para o usuário, por exemplo:
+  //     // toast.error("Falha no login. Verifique suas credenciais.");
+  //   },
+  // });
 
   type FormLoginSchema = z.infer<typeof formLoginSchema>;
 
@@ -60,30 +82,35 @@ export const Login = () => {
     });
   };
 
-  const { data: loginData } = mutation;
+  // const { data: loginData } = mutation;
 
-  const { isLoading } = useQuery<GenerateQrCodeAuthenticationResponse, Error>(
-    ["GenerateQrCodeAuthentication", getValues("email"), getValues("password")],
-    () =>
-      GenerateQrCodeAuthentication({
-        email: getValues("email") || "",
-        password: getValues("password") || "",
-      }),
-    {
-      enabled: loginData?.isFirstAccess === true,
-      staleTime: 5 * 60 * 1000,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-      onSuccess: (data: GenerateQrCodeAuthenticationResponse) => {
-        addQrCode(data);
-        navigate(AUTHENTICATION_2FA.generateQrCodeAuthentication);
-      },
-    }
-  );
+  // const { isLoading } = useQuery<GenerateQrCodeAuthenticationResponse, Error>(
+  //   ["GenerateQrCodeAuthentication", getValues("email"), getValues("password")],
+  //   () =>
+  //     GenerateQrCodeAuthentication({
+  //       email: getValues("email") || "",
+  //       password: getValues("password") || "",
+  //     }),
+  //   {
+  //     enabled: loginData?.isFirstAccess === true,
+  //     staleTime: 5 * 60 * 1000,
+  //     refetchOnWindowFocus: false,
+  //     refetchOnReconnect: false,
+  //     onSuccess: (data: GenerateQrCodeAuthenticationResponse) => {
+  //       addQrCode(data);
+  //       navigate(AUTHENTICATION_2FA.generateQrCodeAuthentication);
+  //     },
+  //   }
+  // );
 
-  if (isLoading) {
-    return <Loader isOpen={isLoading} />;
-  }
+  // if (isLoading) {
+  //   return <Loader isOpen={isLoading} />;
+  // }
+
+  // if (!loginData?.isFirstAccess && loginData?.success) {
+  //   addLoginUpdated(getValues());
+  //   navigate(AUTHENTICATION_2FA.otpAuthentication);
+  // }
 
   return (
     <div className="flex w-[420px] h-screen justify-center items-center m-auto ">
