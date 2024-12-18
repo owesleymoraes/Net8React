@@ -53,7 +53,6 @@ export const OtpAuthentication = () => {
 
           <Button
             className="w-full bg-yellow-300 h-10 rounded-md font-semibold mt-5"
-            typeButton="success"
             onClick={onSubmit}
             disabled={otpCode.length === 6 ? false : true}
           >
@@ -61,7 +60,6 @@ export const OtpAuthentication = () => {
           </Button>
           <Button
             className="w-full bg-gray-300 h-10 rounded-md font-semibold mt-5"
-            typeButton="success"
             onClick={() => navigate(-1)}
           >
             Voltar
