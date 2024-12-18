@@ -21,19 +21,24 @@ namespace api.Services
         public async Task<Authentication> Authenticate(string email, string password)
         {
             SignInResult result = await _signInManager.PasswordSignInAsync(email, password, false, lockoutOnFailure: false);
-            var user = await _userManager.FindByEmailAsync(email);
 
-            // Verificar se o usuário já tem uma chave secreta de autenticador
-            var key = await _userManager.GetAuthenticatorKeyAsync(user);
-
-            if (string.IsNullOrEmpty(key) && result.Succeeded)
+            if (result.Succeeded)
             {
+                var user = await _userManager.FindByEmailAsync(email);
 
-                return Authentication.Create(result.Succeeded, string.IsNullOrEmpty(key));
+                // Verificar se o usuário já tem uma chave secreta de autenticador
+                var key = await _userManager.GetAuthenticatorKeyAsync(user);
+
+                if (string.IsNullOrEmpty(key))
+                {
+
+                    return Authentication.Create(result.Succeeded, string.IsNullOrEmpty(key));
+
+                }
 
             }
 
-            return Authentication.Create(result.Succeeded, false); ;
+            return Authentication.Create(result.Succeeded, false); 
 
         }
 

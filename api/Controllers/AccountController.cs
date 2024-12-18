@@ -52,7 +52,13 @@ namespace api.Controllers
         public async Task<ActionResult<Authentication>> Login([FromBody] LoginModel userInfo)
         {
             var result = await _authentication.Authenticate(userInfo.Email, userInfo.Password);
-            return result;
+            if (result.Success)
+            {
+
+                return result;
+            }
+
+            return StatusCode(500, "Email ou Senha incorretos");
 
 
         }
