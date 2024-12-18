@@ -1,20 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LOGIN_ROUTES } from "../../../../../_routers/paths";
-import { LoginRequest, LoginResponse } from "../../domain/login";
+import { LoginRequest, LoginAuthenticationResponse } from "../../domain/login";
 import { api } from "../api/axios-config";
 
 export const login = async (
   loginRequest: LoginRequest
-): Promise<LoginResponse> => {
+): Promise<LoginAuthenticationResponse> => {
   try {
-    const response = await api.post<LoginResponse>(LOGIN_ROUTES.login, {
-      email: loginRequest.email,
-      password: loginRequest.password,
-    });
+    const response = await api.post<LoginAuthenticationResponse>(
+      LOGIN_ROUTES.login,
+      {
+        email: loginRequest.email,
+        password: loginRequest.password,
+      }
+    );
 
     const data = response?.data;
-    if (!data?.token) {
-      throw new Error("Token is undefined");
+    if (!data) {
+      throw new Error("Error, null");
     }
 
     return data;

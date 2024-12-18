@@ -1,30 +1,53 @@
+import { useUpdatedLoginStore } from "@/_features/auth/authecation-2FA/context/use-otp-authentication-store";
+import { Loader } from "@/components/Loader";
+import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { PAGES_ROUTES } from "../../../../../_routers/paths";
-import { useTokenStore } from "../../../../../_store/use-token-store";
+import { AUTHENTICATION_2FA } from "../../../../../_routers/paths";
+import { useAuthenticationStore } from "../../../../../_store/use-authentication-store";
 import loginImage from "../../../../../assets/login.jpg";
 import { Button } from "../../../../../components/Button";
 import { Input } from "../../../../../components/Input";
 import { formLoginSchema } from "../../../../validation/form-login-schema";
-import { LoginResponse } from "../../domain/login";
+import { LoginAuthenticationResponse } from "../../domain/login";
 import { login } from "../../services/login-client/loginService";
 
 export const Login = () => {
-  const addToken = useTokenStore((state) => state.addToken);
+  const { toast } = useToast();
+  const addLoginUpdated = useUpdatedLoginStore(
+    (state) => state.setUpdatedLogin
+  );
+
+  const addAuthentication = useAuthenticationStore(
+    (state) => state.setAuthentication
+  );
+
   const navigate = useNavigate();
 
   const mutation = useMutation(login, {
-    onSuccess: (data: LoginResponse) => {
-      addToken(data.token);
-      setValue("email", "");
-      setValue("password", "");
-      navigate(PAGES_ROUTES.student);
+    onSuccess: (data: LoginAuthenticationResponse) => {
+      addAuthentication(data);
+
+      if (data.isFirstAccess && data.success) {
+        // Se for o primeiro acesso, navegue para a página de leitura do QR Code
+
+        addLoginUpdated(getValues());
+        navigate(AUTHENTICATION_2FA.generateQrCodeAuthentication);
+      } else if (data.success) {
+        // Se não for o primeiro acesso, navegue para a página de OTP
+        addLoginUpdated(getValues());
+        navigate(AUTHENTICATION_2FA.otpAuthentication);
+      }
     },
-    onError: (error) => {
-      console.error("Erro no login:", error);
+    onError: () => {
+      toast({
+        title: "Parece que algo deu errado com login.",
+        description: "Verifique se a senha e email estão corretos.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -34,7 +57,6 @@ export const Login = () => {
     reset,
     register,
     getValues,
-    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<FormLoginSchema>({
@@ -51,6 +73,12 @@ export const Login = () => {
       password: getValues("password"),
     });
   };
+
+  const { isLoading } = mutation;
+
+  if (isLoading) {
+    return <Loader isOpen={isLoading} />;
+  }
 
   return (
     <div className="flex w-[420px] h-screen justify-center items-center m-auto ">

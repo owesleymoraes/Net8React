@@ -1,15 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
+import { PAGES_ROUTES } from "../../../../../_routers/paths";
+import Alert from "../../../../../components/Alert";
 import { Button } from "../../../../../components/Button";
 import { Input } from "../../../../../components/Input";
+import { Loader } from "../../../../../components/Loader";
 import { formCreateStudentSchema } from "../../../../validation/form-create-student-schema";
 import { create } from "../../../services/students/createStudentService";
-import { useNavigate } from "react-router-dom";
-import { PAGES_ROUTES } from "../../../../../_routers/paths";
-import { Loader } from "../../../../../components/Loader";
-import Alert from "../../../../../components/Alert";
 
 export const CreateStudent = () => {
   const navigate = useNavigate();
@@ -17,8 +17,7 @@ export const CreateStudent = () => {
 
   const mutation = useMutation(create, {
     onSuccess: () => {
-      setValue("email", "");
-      setValue("name", "");
+      reset();
       navigate(PAGES_ROUTES.student);
     },
   });
@@ -28,7 +27,7 @@ export const CreateStudent = () => {
   const {
     register,
     getValues,
-    setValue,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm<FormCreateStudentSchema>({

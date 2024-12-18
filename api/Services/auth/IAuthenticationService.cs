@@ -1,13 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using api.Models.Auth;
 
 namespace api.Services
 {
     public interface IAuthenticationService
     {
-        Task<bool> Authenticate(string email, string password);
+        Task<Authentication> Authenticate(string email, string password);
+        Task<User2FA> GenerateTwoFactorAuthentication(string email, string password);
+        Task<bool> ValidateTwoFactorAuthentication(LoginModel userInfo);
         Task<bool> RegisterUser(string email, string password);
         Task Logout();
 
