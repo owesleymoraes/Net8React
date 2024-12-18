@@ -1,4 +1,6 @@
 import { useUpdatedLoginStore } from "@/_features/auth/authecation-2FA/context/use-otp-authentication-store";
+import { Loader } from "@/components/Loader";
+import { useToast } from "@/hooks/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
@@ -14,6 +16,7 @@ import { LoginAuthenticationResponse } from "../../domain/login";
 import { login } from "../../services/login-client/loginService";
 
 export const Login = () => {
+  const { toast } = useToast();
   const addLoginUpdated = useUpdatedLoginStore(
     (state) => state.setUpdatedLogin
   );
@@ -22,10 +25,6 @@ export const Login = () => {
     (state) => state.setAuthentication
   );
 
-  // const addQrCode = useGenerateQrCodeAuthenticationStore(
-  //   (state) => state.setQrCode
-  // );
-  
   const navigate = useNavigate();
 
   const mutation = useMutation(login, {
@@ -34,6 +33,7 @@ export const Login = () => {
 
       if (data.isFirstAccess && data.success) {
         // Se for o primeiro acesso, navegue para a página de leitura do QR Code
+
         addLoginUpdated(getValues());
         navigate(AUTHENTICATION_2FA.generateQrCodeAuthentication);
       } else if (data.success) {
@@ -42,22 +42,14 @@ export const Login = () => {
         navigate(AUTHENTICATION_2FA.otpAuthentication);
       }
     },
-    onError: (error: Error) => {
-      console.error("Erro no login:", error.message);
-      // Adicione aqui um feedback visual para o usuário
+    onError: () => {
+      toast({
+        title: "Parece que algo deu errado com login.",
+        description: "Verifique se a senha e email estão corretos.",
+        variant: "destructive",
+      });
     },
   });
-
-  // const mutation = useMutation(login, {
-  //   onSuccess: (data: LoginAuthenticationResponse) => {
-  //     addAuthentication(data);
-  //   },
-  //   onError: (error: Error) => {
-  //     console.error("Erro in login:", error.message);
-  //     // Adicione aqui um feedback visual para o usuário, por exemplo:
-  //     // toast.error("Falha no login. Verifique suas credenciais.");
-  //   },
-  // });
 
   type FormLoginSchema = z.infer<typeof formLoginSchema>;
 
@@ -82,35 +74,11 @@ export const Login = () => {
     });
   };
 
-  // const { data: loginData } = mutation;
+  const { isLoading } = mutation;
 
-  // const { isLoading } = useQuery<GenerateQrCodeAuthenticationResponse, Error>(
-  //   ["GenerateQrCodeAuthentication", getValues("email"), getValues("password")],
-  //   () =>
-  //     GenerateQrCodeAuthentication({
-  //       email: getValues("email") || "",
-  //       password: getValues("password") || "",
-  //     }),
-  //   {
-  //     enabled: loginData?.isFirstAccess === true,
-  //     staleTime: 5 * 60 * 1000,
-  //     refetchOnWindowFocus: false,
-  //     refetchOnReconnect: false,
-  //     onSuccess: (data: GenerateQrCodeAuthenticationResponse) => {
-  //       addQrCode(data);
-  //       navigate(AUTHENTICATION_2FA.generateQrCodeAuthentication);
-  //     },
-  //   }
-  // );
-
-  // if (isLoading) {
-  //   return <Loader isOpen={isLoading} />;
-  // }
-
-  // if (!loginData?.isFirstAccess && loginData?.success) {
-  //   addLoginUpdated(getValues());
-  //   navigate(AUTHENTICATION_2FA.otpAuthentication);
-  // }
+  if (isLoading) {
+    return <Loader isOpen={isLoading} />;
+  }
 
   return (
     <div className="flex w-[420px] h-screen justify-center items-center m-auto ">
