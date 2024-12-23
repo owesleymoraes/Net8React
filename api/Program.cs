@@ -45,10 +45,21 @@ builder.Services.AddSwaggerGen(c =>
   }
 );
 
-string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+// connection string mysql
+// string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+
+// connection string postgresql
+string connection = builder.Configuration.GetConnectionString("ConnectionPostgresqlStaging");
+
+// Configurando o DbContext para usar o MySQL
+
+// builder.Services.AddDbContext<AppDbContext>(options =>
+//     options.UseMySql(connection, ServerVersion.AutoDetect(connection)));
+
+// Configurando o DbContext para usar o PostgreSQL
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connection, ServerVersion.AutoDetect(connection)));
+    options.UseNpgsql(connection)); // UseNpgsql é usado para PostgreSQL
 
 // Configuração do Identity
 
