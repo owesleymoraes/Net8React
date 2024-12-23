@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { HOME, PAGES_ROUTES } from "../../../../../_routers/paths";
@@ -25,15 +25,18 @@ export const StudentList = () => {
     },
   });
 
-  const { data, error, isLoading } = useQuery<StudentResponse[], Error>(
-    ["getAll"],
-    () => getAll(),
-    {
-      staleTime: 5 * 60 * 1000,
-      refetchOnWindowFocus: false,
-      refetchOnReconnect: false,
-    }
-  );
+  const { data, error, isLoading, refetch } = useQuery<
+    StudentResponse[],
+    Error
+  >(["getAll"], () => getAll(), {
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const [idStudent, setIdStudent] = useState<number | undefined>();
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false);
