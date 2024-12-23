@@ -7,24 +7,24 @@ namespace api.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
+
         private readonly UserManager<IdentityUser> _userManager;
 
 
-        public AuthenticationService(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        public AuthenticationService(UserManager<IdentityUser> userManager)
         {
-            _signInManager = signInManager;
+
             _userManager = userManager;
 
         }
 
         public async Task<Authentication> Authenticate(string email, string password)
         {
-            SignInResult result = await _signInManager.PasswordSignInAsync(email, password, false, lockoutOnFailure: false);
+            var user = await _userManager.FindByEmailAsync(email);
+            var result = await _userManager.CheckPasswordAsync(user, password);
 
-            if (result.Succeeded)
+            if (result)
             {
-                var user = await _userManager.FindByEmailAsync(email);
 
                 // Verificar se o usuário já tem uma chave secreta de autenticador
                 var key = await _userManager.GetAuthenticatorKeyAsync(user);
@@ -32,13 +32,13 @@ namespace api.Services
                 if (string.IsNullOrEmpty(key))
                 {
 
-                    return Authentication.Create(result.Succeeded, string.IsNullOrEmpty(key));
+                    return Authentication.Create(result, string.IsNullOrEmpty(key));
 
                 }
 
             }
 
-            return Authentication.Create(result.Succeeded, false); 
+            return Authentication.Create(result, false);
 
         }
 
@@ -125,11 +125,6 @@ namespace api.Services
 
         }
 
-        public async Task Logout()
-        {
-            await _signInManager.SignOutAsync();
-        }
-
         public async Task<bool> RegisterUser(string email, string password)
         {
             IdentityUser appUser = new IdentityUser
@@ -145,7 +140,6 @@ namespace api.Services
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByEmailAsync(email);
-                await _signInManager.SignInAsync(appUser, isPersistent: false);
                 await _userManager.SetTwoFactorEnabledAsync(user!, true);
 
             }
